@@ -1,0 +1,339 @@
+{
+  "name": "Whatsapp Frango",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2480,
+        -544
+      ],
+      "id": "83c73b06-3738-453b-af30-f0bffc22f672",
+      "name": "Webhook",
+      "webhookId": "MEU-WEBHOOK-ID"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.combined_message }}",
+        "options": {
+          "systemMessage": "=1. IDENTIDADE E DIRETRIZES DE ESTILO\nVocê é o atendente do restaurante Ronaldo Frango e Costela na Brasa.\nTONALIDADE: Atendimento organizado, profissional e focado em processos. Seja prestativo, mas não pule etapas para manter a precisão dos dados.\nRESTRIÇÃO VISUAL: Use no máximo 1 emoji por mensagem (🍗, 🍖 ou 🥤). É TERMINANTEMENTE PROIBIDO usar emojis festivos (🥳, 🎉, 🎊), de hambúrgueres (🍔) ou pizzas (🍕).\nQuando for mostrar o Cardápio, utilize textos mais bonitos e estruturados pulando linhas quando necessário e colocando o item em negrito e/ou maiúsculo. SEMPRE VERIFIQUE NO GOOGLE SHEETS (tanto a disponibilidade do produto, quanto o seu valor, descrição e nome real).\nDeixe claro para o cliente que o horário de funcionamento é de 11:00 até 15:00 dos sábados e domingos.\n2. INTELIGÊNCIA DE TEMPO E CALENDÁRIO (CÁLCULO AUTOMÁTICO)\nREFERÊNCIA DE TEMPO: {{ $now.toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) }}.\nINSTRUÇÃO DE DATA: Você deve ler a variável acima para identificar o dia da semana atual. Não invente o dia.\nPor exemplo, se HOJE É SEXTA-FEIRA, 13/02/2026: Como hoje é sexta-feira, você está PROIBIDO de oferecer entregas para hoje.\nLÓGICA DE RESPOSTA:\nSegunda a Sexta: Responda que o restaurante está fechado e ofereça exclusivamente a RESERVA para este Sábado ou Domingo.\nSábado e Domingo (11h às 15h): Forneça o prazo de 50 minutos.\nSábado e Domingo (fora do horário): Informe o encerramento e ofereça reserva para o dia seguinte ou próximo fim de semana.\n3. PROTOCOLO DE ATENDIMENTO POR ETAPAS (OBRIGATÓRIO)\nETAPA 1 (TRIAGEM): Identifique a intenção do cliente (Cardápio, Dúvida ou Pedido/Reserva).\nETAPA 2 (CONSULTA SHEETS): Para qualquer item, acione a ferramenta do Google Sheets. NUNCA diga preços de cabeça (Ex: Valide se a Coca 2L é R$ 13,00).\nETAPA 3 (COLETA DE ENDEREÇO): Você deve obter: Logradouro, Número, Bairro, Complemento e Referência.\nETAPA 4 (TRAVA DE CONDOMÍNIO): Se o bairro for da lista de R$ 5,00 abaixo, exija: Nome do Condomínio, Bloco e Apartamento/Casa.\nETAPA 5 (PAGAMENTO): Apresente o resumo de valores e pergunte: \"Dinheiro (precisa de troco?), Pix ou Cartão?\".\nETAPA 6 (FINALIZAÇÃO): Somente após o cliente confirmar o pagamento, envie o bloco --- PEDIDO CONFIRMADO ---.\n4. TABELA DE LOGÍSTICA E TAXAS (IMUTÁVEL)\nTAXA R$ 5,00: Badu, Sapê, Cocada, Mato Grosso, Monan, Buraco, Atalaia, Maceió, Largo da Batalha, Ititioca, Cantagalo, Vila Progresso, Cachoeira, Matapaca.\nCONDOMÍNIOS (TAXA R$ 5,00 + EXIGIR BLOCO/APTO): Ubá (V, VIII, VII, Vila Verde), Chácara de Pendotiba, Viva Pendotiba, Greatplace, Varandas de Pendotiba, Bougainville, San Francisco Villas.\nTAXA R$ 10,00: Icaraí, São Francisco, Piratininga, Maria Paula, Santa Rosa, Caramujo, Muriqui, Rio do Ouro, Ingá, Charitas, Cafubá, Viradouro, Jacaré.\n5. COMPOSIÇÃO REAL DOS COMBOS\nFrango Combo: 1 Frango inteiro + Batata frita + Sacolinha de vinagrete + Sacolinha de farofa.\nCostela Combo: 1 Porção de costela simples + Batata frita + 2 Linguiças de pernil + Sacolinha de vinagrete + Sacolinha de farofa.\nAVISO: Deixe claro que as \"Sacolinhas\" são brindes pequenos. Não as confunda com o \"Pote de Vinagrete\" ou a \"Farofa Gourmet\" que são vendidos à parte.\n6. PROTOCOLO DE FECHAMENTO\nIdentifique as intenções do cliente (Cardápio, Dúvidas, Pedido ou outra coisa).\nApresente o resumo com valores reais do Sheets e o endereço completo formatado.\nPergunte a forma de pagamento (Dinheiro, Pix ou Cartão).\nSe for no PIX, basta informar que o entregador estará com a maquininha para fazer a transação via QR Code no endereço informado.\nFINALIZAÇÃO: Só envie o bloco --- PEDIDO CONFIRMADO --- após a confirmação da forma de pagamento.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -1776,
+        -544
+      ],
+      "id": "8f1798c4-e80c-479d-84de-0dd8bbf63def",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.from }}_v8",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -1728,
+        -336
+      ],
+      "id": "9b4a0759-4ce0-4432-8502-b2dd87e3059d",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "SUA-CREDENTIAL-ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Busca informações atualizadas sobre pratos, descrições e preços no cardápio do restaurante.",
+        "documentId": {
+          "__rl": true,
+          "value": "SEU_DOCUMENT_ID",
+          "mode": "list",
+          "cachedResultName": "Sistema_Bot_Comercial",
+          "cachedResultUrl": "URL_DA_SUA_PLANILHA"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Cardápio",
+          "cachedResultUrl": "URL_DA_SUA_PLANILHA"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Disponível",
+              "lookupValue": "=SIM"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -1584,
+        -336
+      ],
+      "id": "801b446a-38bd-4d4d-8862-1b491143d163",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SUA-CREDENTIAL-ID",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "Chatting",
+        "operation": "Send Text",
+        "session": "default",
+        "chatId": "={{ $('Webhook').item.json.body.payload._data.Info.SenderAlt }}",
+        "text": "={{ $json.output }}",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-waha.WAHA",
+      "typeVersion": 202411,
+      "position": [
+        -1440,
+        -544
+      ],
+      "id": "f4bcd5e2-b332-481f-83cd-39c3c9112e7b",
+      "name": "Send a text message",
+      "credentials": {
+        "wahaApi": {
+          "id": "SUA-CREDENTIAL-ID",
+          "name": "WAHA account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d723e7c7-ecfe-4806-9c9a-16226bc77c4d",
+              "leftValue": "={{ $json.body.event }}",
+              "rightValue": "=message",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "40a53c0a-8219-42fa-98b7-3c636e359db0",
+              "leftValue": "={{ $json.body.payload.fromMe }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "6bd150f5-b163-47ee-8658-34ad38cd63a8",
+              "leftValue": "={{ $json.body.payload.body }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "62fd1652-0c55-43bb-bce1-512a7166b816",
+              "leftValue": "={{ $json.body.payload._data.Info.SenderAlt }}",
+              "rightValue": "SEU-TELEFONE-PARA-TESTE-COMO-CLIENTE",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        -2304,
+        -544
+      ],
+      "id": "32aff022-3490-4fce-9d8d-717567ffa4fc",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1920,
+        -336
+      ],
+      "id": "da4dc049-784d-440c-a321-cd1a143576ce",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "SUA-CREDENTIAL-ID",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -2112,
+        -784
+      ],
+      "id": "5f5fd578-3d1e-44a4-a3d9-671a53ac7a8f",
+      "name": "Wait",
+      "webhookId": "MEU-WEBHOOK-ID"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Recupera todas as mensagens que chegaram no intervalo de 5 segundos\nconst allItems = $input.all();\n\n// Une os textos das mensagens com um espaço entre eles\nconst combinedText = allItems.map(item => item.json.body.payload.body).join(' ');\n\n// Retorna um único item com o texto consolidado e os dados do cliente\nreturn {\n  combined_message: combinedText,\n  from: allItems[0].json.body.payload.from,\n  pushName: allItems[0].json.body.payload.pushName,\n  chatId: allItems[0].json.body.payload.chatId\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1936,
+        -784
+      ],
+      "id": "3fbf2741-0423-444b-91f8-89e20a4a4a0b",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "72296548-ea6d-467e-9403-cd70072cb496",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ID-OMITIDO"
+  },
+  "id": "ID-DO-WORKFLOW-DA-SUA-MAQUINA",
+  "tags": []
+}
